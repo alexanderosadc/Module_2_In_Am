@@ -1,0 +1,49 @@
+CREATE DATABASE [WorkChatDB];
+
+USE WorkChatDB;
+
+CREATE TABLE [Users]
+(
+	[Id] INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+	[FirstName] VARCHAR(50) NOT NULL,
+	[LastName] VARCHAR(50) NOT NULL
+)
+
+CREATE TABLE [AttachedFiles]
+(
+	[Id] INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+	[FileUrl] VARCHAR NOT NULL,
+	[FileFormat] VARCHAR(10) DEFAULT '.txt'
+)
+
+CREATE TABLE [Messages]
+(
+	[Id] INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+	[Text] VARCHAR,
+	[SentAt] DATETIME NOT NULL DEFAULT GETDATE(),
+	[AttachedFilesID] INT FOREIGN KEY REFERENCES [AttachedFiles(Id)]
+)
+
+CREATE TABLE [MessageGroups]
+(
+	[Id] INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+	[Tittle] VARCHAR(50),
+)
+
+CREATE TABLE [UserMessageGroup]
+(
+	[UsersId] INT NOT NULL FOREIGN KEY REFERENCES [Users],
+	[MessagesGroupId] INT NOT NULL FOREIGN KEY REFERENCES [MessageGroups]
+)
+
+CREATE TABLE [UserCredentials]
+(
+	[Id] INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+	[Username] VARCHAR(15) NOT NULL UNIQUE,
+	[Password] VARCHAR(256) NOT NULL
+)
+
+ALTER TABLE [Users] ADD [UserCredentialsId] INT NULL REFERENCES [UserCredentials]
+
+ALTER TABLE [MessageGroups] ADD [MessagesId] INT NOT NULL REFERENCES [Messages]
+
